@@ -1,0 +1,19 @@
+<div class="sidebar">
+    <div class="brand">
+        <mat-icon>layers</mat-icon>
+    </div>
+    <div class="brand-text">
+        crtyptoFolio
+    </div>
+
+    <div class="menu-list">
+        @for (item of menuItems; track item.label) {
+             <button mat-button class="menu-item" [class.active]="item.active">
+                <mat-icon>{{item.icon}}</mat-icon>
+                <span>{{item.label}}</span>
+             </button>
+        }
+       
+    </div>
+
+</div>

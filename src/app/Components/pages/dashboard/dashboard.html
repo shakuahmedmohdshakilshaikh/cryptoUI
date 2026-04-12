@@ -1,0 +1,195 @@
+<div class="container">
+  @if (loading) {
+    <div class="loading">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
+    <div class="content">
+      <h2>Dashboard Content</h2>
+
+      <div class="cards">
+        <mat-card>
+          <p>Wallet Balance</p>
+          <h3>{{ dashboardData.walletBalance }}</h3>
+        </mat-card>
+
+        <mat-card>
+          <p>Total Investment</p>
+          <h2>₹ {{ dashboardData.totalInvestment }}</h2>
+        </mat-card>
+
+        <mat-card>
+          <p>Total Portfolio Value</p>
+          <h3>{{ dashboardData.portfolioValue }}</h3>
+        </mat-card>
+
+          <mat-card>
+      <p>P&L</p>
+      <h2 [class.green]="dashboardData.profitLoss >= 0"
+          [class.red]="dashboardData.profitLoss < 0">
+        ₹ {{ dashboardData.profitLoss }}
+      </h2>
+    </mat-card>
+
+      </div>
+
+      <div class="grid">
+        <mat-card>
+            <h3>Portfolio chart</h3>
+              <div class="chart-container">
+  <canvas
+    baseChart
+    [data]="pieChartConfig"
+    [type]="'doughnut'">
+  </canvas>
+</div>
+            
+        </mat-card>
+
+           <mat-card>
+      <h3>Top Holdings</h3>
+
+      @for (item of dashboardData.topHolding; track item.cryptoId) {
+        <div class="row">
+          <img [src]="item.image" width="30">
+          <span>{{ item.cryptoName }}</span>
+          <span>₹ {{ item.currentValue }}</span>
+        </div>
+      }
+
+    </mat-card>
+
+      </div>
+
+      
+    </div>
+
+     <!-- RECENT TRANSACTIONS -->
+  <mat-card>
+    <h3>Recent Transactions</h3>
+
+    @for (t of dashboardData.recentTransactions; track t.transactionId) {
+      <div class="row">
+        <span>{{ t.cryptoName }}</span>
+        <span>{{ t.type }}</span>
+        <span>₹ {{ t.totalAmount }}</span>
+      </div>
+    }
+  </mat-card>
+
+  <!-- TABLE -->
+ <mat-card class="table-card">
+  <div class="table-header">
+    <div class="section-title">Crypto Table</div>
+    <div class="table-meta">Total Records: {{ totalRecords }}</div>
+  </div>
+
+  <div class="table-toolbar">
+    <mat-form-field appearance="outline" class="search-box">
+      <mat-label>Search coin</mat-label>
+      <input
+        matInput
+        [(ngModel)]="searchText"
+        placeholder="Enter coin name"
+        (keyup.enter)="onSearch()"
+      />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="onSearch()">Search</button>
+    <button mat-stroked-button (click)="clearSearch()">Clear</button>
+
+    <mat-form-field appearance="outline" class="page-size-box">
+      <mat-label>Page Size</mat-label>
+      <select matNativeControl [ngModel]="pageSize" (ngModelChange)="changePageSize($event)">
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+      </select>
+    </mat-form-field>
+  </div>
+
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="coins" class="full-width">
+
+      <ng-container matColumnDef="image">
+        <th mat-header-cell *matHeaderCellDef>Image</th>
+        <td mat-cell *matCellDef="let row">
+          <img [src]="row.image" [alt]="row.cryptoName" class="coin-img" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cryptoName">
+        <th mat-header-cell *matHeaderCellDef>
+          <button class="sort-btn" (click)="onSortChange('CryptoName')">
+            Name
+            <mat-icon>{{ getSortIcon('CryptoName') }}</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.cryptoName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="symbol">
+        <th mat-header-cell *matHeaderCellDef>
+          <button class="sort-btn" (click)="onSortChange('Symbol')">
+            Symbol
+            <mat-icon>{{ getSortIcon('Symbol') }}</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.symbol }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="currentPrice">
+        <th mat-header-cell *matHeaderCellDef>
+          <button class="sort-btn" (click)="onSortChange('CurrentPrice')">
+            Price
+            <mat-icon>{{ getSortIcon('CurrentPrice') }}</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.currentPrice | number:'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="marketCap">
+        <th mat-header-cell *matHeaderCellDef>
+          <button class="sort-btn" (click)="onSortChange('MarketCap')">
+            Market Cap
+            <mat-icon>{{ getSortIcon('MarketCap') }}</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.marketCap | number:'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>
+          <button class="sort-btn" (click)="onSortChange('IsActive')">
+            Status
+            <mat-icon>{{ getSortIcon('IsActive') }}</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <span [class.active]="row.isActive" [class.inactive]="!row.isActive">
+            {{ row.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div class="pagination-box">
+    <button mat-stroked-button (click)="previousPage()" [disabled]="pageNumber === 1">
+      Previous
+    </button>
+
+    <span>Page {{ pageNumber }} of {{ totalPages }}</span>
+
+    <button mat-stroked-button (click)="nextPage()" [disabled]="pageNumber === totalPages">
+      Next
+    </button>
+  </div>
+</mat-card>
+
+    
+  }
+</div>
