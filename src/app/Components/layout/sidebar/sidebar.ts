@@ -1,22 +1,20 @@
 import { Component } from '@angular/core';
 import { MaterialModule } from '../../../Material.Module';
-import { Dashboard } from '../../pages/dashboard/dashboard';
-import { routes } from '../../../app.routes';
-import { Crypto } from '../../pages/crypto/crypto';
+import {  RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [MaterialModule],
+  imports: [MaterialModule,RouterModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })
 export class Sidebar {
-  menuItems = [
-    {icon: Dashboard, label: 'Dashboard', active: true},
-    { icon: Crypto, label: 'Crypto', active: true },
-    { icon: 'account_balance_wallet', label: 'My Wallet', active: false },
-    { icon: 'favorite_border', label: 'Favorites', active: false },
-    { icon: 'add_circle_outline', label: 'Add Money', active: false },
-    { icon: 'settings', label: 'Settings', active: false }
+    menuItems = [
+    { icon: 'dashboard', label: 'Dashboard', route: '/dashboard' },
+    { icon: 'currency_bitcoin', label: 'Crypto', route: '/crypto' },
+    { icon: 'account_balance_wallet', label: 'My Wallet', route: '/wallet' },
+    { icon: 'favorite_border', label: 'Favorites', route: '/favourites' },
+    { icon: 'add_circle_outline', label: 'Add Money', route: '/add-money' },
+    { icon: 'settings', label: 'Settings', route: '/settings' }
   ];
 }

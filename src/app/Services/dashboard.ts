@@ -30,11 +30,11 @@ export class Dashboard {
       params = params.set('SortOrder', sortOrder);
     }
 
-    return this.http.get<any>(`${this.apiUrl}/crypto/get-coins`, { params });
+    return this.http.get<any>(`${this.apiUrl}crypto/get-coins`, { params });
   }
 
   fetchCoins(userId : number):Observable<any>{
-    return this.http.get<any>(`${this.apiUrl}/dashboard?userId=${userId}`);
+    return this.http.get<any>(`${this.apiUrl}dashboard?userId=${userId}`);
   }
 
 

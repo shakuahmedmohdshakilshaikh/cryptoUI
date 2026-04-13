@@ -1,0 +1,46 @@
+<div class="favourites-page">
+  <div class="page-header">
+    <h2>My Favourite Coins</h2>
+  </div>
+
+  @if (loading) {
+    <p>Loading...</p>
+  }
+
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+
+  @if (!loading && favourites.length === 0) {
+    <p>No favourite coins found.</p>
+  }
+
+  @if (!loading && favourites.length > 0) {
+    <div class="card-grid">
+      @for (item of favourites; track item.fid) {
+        <mat-card class="fav-card">
+          <div class="fav-top">
+            <img [src]="item.image" [alt]="item.cryptoName" class="coin-img" />
+
+            <button mat-icon-button color="warn" (click)="removeFavourite(item)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <h3>{{ item.cryptoName }}</h3>
+          <p class="symbol">{{ item.symbol }}</p>
+
+          <div class="info-row">
+            <span>Crypto Id</span>
+            <strong>{{ item.cryptoId }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Added On</span>
+            <strong>{{ item.createdAt | date:'dd-MM-yyyy' }}</strong>
+          </div>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

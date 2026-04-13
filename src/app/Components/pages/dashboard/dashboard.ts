@@ -24,7 +24,7 @@ export class Dashboard implements OnInit {
   currency = 'inr';
 
   pageNumber = 1;
-  pageSize = 15;
+  pageSize = 5;
   totalRecords = 0;
   totalPages = 0;
 

@@ -1,1 +1,130 @@
-<p>crypto works!</p>
+<div class="crypto-page">
+  <div class="page-header">
+    <h2>All Cryptocurrencies</h2>
+
+    <button mat-raised-button color="primary" (click)="goToFavourite()">
+      Go To Favourites
+    </button>
+  </div>
+
+  <mat-card class="table-card">
+    <div class="toolbar">
+      <mat-form-field appearance="outline" class="search-box">
+        <mat-label>Search coin</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          placeholder="Search by name, symbol, id"
+          (keyup.enter)="applyFilter()"
+        />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="applyFilter()">
+        Search
+      </button>
+
+      <button mat-stroked-button (click)="clearFilter()">
+        Clear
+      </button>
+    </div>
+
+    @if (loading) {
+      <p>Loading...</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (!loading) {
+    <mat-paginator
+  [length]="totalRecords"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 15, 20]"
+  [pageIndex]="currentPage > 0 ? currentPage - 1 : 0"
+  (page)="onPageChange($event)">
+</mat-paginator>
+
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="coins" class="full-width">
+
+          <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef>Image</th>
+            <td mat-cell *matCellDef="let row">
+              <img [src]="row.image" [alt]="row.cryptoName" class="coin-img" />
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="cryptoName">
+            <th mat-header-cell *matHeaderCellDef>
+              <button class="sort-btn" (click)="onSort('cryptoname')">
+                Coin
+                <mat-icon>{{ getSortIcon('cryptoname') }}</mat-icon>
+              </button>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <div class="coin-info">
+                <div class="coin-name">{{ row.cryptoName }}</div>
+                <div class="coin-symbol">{{ row.symbol }}</div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="currentPrice">
+            <th mat-header-cell *matHeaderCellDef>
+              <button class="sort-btn" (click)="onSort('currentprice')">
+                Price
+                <mat-icon>{{ getSortIcon('currentprice') }}</mat-icon>
+              </button>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              ₹ {{ row.currentPrice | number:'1.2-2' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="marketCap">
+            <th mat-header-cell *matHeaderCellDef>
+              <button class="sort-btn" (click)="onSort('marketcap')">
+                Market Cap
+                <mat-icon>{{ getSortIcon('marketcap') }}</mat-icon>
+              </button>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              ₹ {{ row.marketCap | number:'1.2-2' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let row">
+              <div class="action-buttons">
+                <button mat-icon-button color="primary" (click)="buyCoin(row)" matTooltip="Buy">
+                  <mat-icon>shopping_cart</mat-icon>
+                </button>
+
+                <button mat-icon-button color="warn" (click)="addToFavourite(row)" matTooltip="Favourite">
+                  <mat-icon>favorite</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <div class="pagination-box">
+        <button mat-stroked-button (click)="previousPage()" [disabled]="currentPage === 1">
+          Previous
+        </button>
+
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+        <button mat-stroked-button (click)="nextPage()" [disabled]="currentPage === totalPages || totalPages === 0">
+          Next
+        </button>
+      </div>
+    }
+  </mat-card>
+</div>
