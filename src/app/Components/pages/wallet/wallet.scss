@@ -1,0 +1,196 @@
+.wallet-page {
+  padding: 24px;
+  background: #f7f8fc;
+  min-height: 100vh;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  color: #7b8190;
+  margin-bottom: 18px;
+}
+
+.balance-card {
+  border-radius: 22px;
+  border: none;
+  padding: 28px 30px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #2f49ff 0%, #4c3bff 45%, #6a43ff 100%);
+  color: white;
+  box-shadow: none;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.balance-left .label {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  opacity: 0.9;
+}
+
+.balance-left h1 {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.balance-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.deposit-btn,
+.withdraw-btn {
+  border-radius: 12px;
+  min-width: 120px;
+  height: 42px;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.deposit-btn {
+  background: white !important;
+  color: #4a42ff !important;
+}
+
+.withdraw-btn {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: white !important;
+}
+
+.holding-card,
+.wallet-form-card {
+  border-radius: 22px;
+  border: 1px solid #ececf4;
+  box-shadow: none;
+  padding: 22px;
+  background: #fff;
+}
+
+.holding-card {
+  margin-bottom: 20px;
+}
+
+.holding-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  gap: 12px;
+}
+
+.holding-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.asset-count-btn {
+  border-radius: 20px;
+  color: #5b5ce9 !important;
+  border-color: #d9daf8 !important;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.holdings-table {
+  width: 100%;
+}
+
+.coin-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coin-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f3f4ff;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.coin-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.coin-symbol {
+  font-size: 12px;
+  color: #7b8190;
+  text-transform: uppercase;
+}
+
+.tx-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tx-badge.buy {
+  background: #eafaf1;
+  color: #159a55;
+}
+
+.tx-badge.sell {
+  background: #fff0f0;
+  color: #d83a3a;
+}
+
+.empty-state {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #7b8190;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+::ng-deep .mat-mdc-header-cell {
+  color: #9aa1b4 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+::ng-deep .mat-mdc-cell {
+  border-bottom-color: #f0f1f7 !important;
+}
+
+@media (max-width: 900px) {
+  .balance-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .balance-left h1 {
+    font-size: 34px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

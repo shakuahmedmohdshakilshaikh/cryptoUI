@@ -20,4 +20,8 @@ export class FavouriteService {
       return this.http.delete<any>(`${this.apiUrl}userfavourite/${fid}`);
     }
 
+    buycoin(data : any): Observable<any>{
+  return this.http.post<any>(`${this.apiUrl}portfolio/buy`, data);
+}
+
 }

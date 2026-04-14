@@ -1,0 +1,19 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <h2>Setup 2FA</h2>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Email" [(ngModel)]="email">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="generate()">
+      Generate QR
+    </button>
+
+    @if(qr){
+      <div class="qr">
+        <img [src]="'data:image/png;base64,' + qr">
+      </div>
+    }
+  </mat-card>
+</div>

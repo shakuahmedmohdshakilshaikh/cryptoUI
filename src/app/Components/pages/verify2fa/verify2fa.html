@@ -1,0 +1,20 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <h2>Verify 2FA</h2>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Email" [(ngModel)]="model.email">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Code" [(ngModel)]="model.code">
+    </mat-form-field>
+
+    @if(message){ <p class="success">{{message}}</p> }
+    @if(errorMessage){ <p class="error">{{errorMessage}}</p> }
+
+    <button mat-raised-button color="primary" (click)="verify()">
+      Verify
+    </button>
+  </mat-card>
+</div>

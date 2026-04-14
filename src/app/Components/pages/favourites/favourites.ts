@@ -50,4 +50,40 @@ export class Favourites implements OnInit {
       }
     });
   }
+
+  buyCoin(item: any): void {
+    const amountText  =  prompt(`Enter amount to buy ${item.cryptoname}`, '1000');
+
+    if(!amountText){
+      return;
+    }
+      const amount = Number(amountText);
+
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter valid amount');
+      return;
+    }
+
+    const payload = {
+      userId: this.userId,
+      cryptoId: item.cryptoId,
+      amount: amount
+    };
+
+    this.crypto.buycoin(payload).subscribe({
+      next: (res) => {
+        console.log(res);
+        alert(`${item.cryptoName} bought successfully`);
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Buy failed');
+      }
+    });
+  }
+
+  isValidDate(date: string): boolean {
+    return !!date && !date.startsWith('0001-01-01');
+  
+  }
 }

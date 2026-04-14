@@ -1,0 +1,147 @@
+.transaction-page {
+  padding: 24px;
+  background: #f7f8fc;
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 36px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  color: #5b6b9a;
+  font-weight: 500;
+}
+
+.transaction-card {
+  border-radius: 22px;
+  padding: 24px;
+  border: 1px solid #ececf4;
+  box-shadow: none;
+  background: #fff;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.left-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.left-title h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.red-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: #ff5a5f;
+  display: inline-block;
+}
+
+.count-badge {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #fff2f2;
+  color: #d85c5c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.transaction-table {
+  width: 100%;
+}
+
+.coin-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.coin-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.coin-symbol {
+  font-size: 12px;
+  color: #8c94a9;
+  text-transform: uppercase;
+}
+
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 95px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.type-badge.buy {
+  background: #f0f3ff;
+  color: #5663f0;
+}
+
+.type-badge.sell {
+  background: #fff2f2;
+  color: #d84c4c;
+}
+
+.empty-state {
+  min-height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #7b8190;
+}
+
+.error {
+  color: red;
+  margin-bottom: 12px;
+}
+
+::ng-deep .mat-mdc-header-cell {
+  color: #9aa1b4 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+::ng-deep .mat-mdc-cell {
+  border-bottom-color: #f0f1f7 !important;
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .transaction-card {
+    padding: 16px;
+  }
+}

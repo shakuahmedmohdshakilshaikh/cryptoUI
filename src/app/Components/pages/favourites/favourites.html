@@ -22,9 +22,7 @@
           <div class="fav-top">
             <img [src]="item.image" [alt]="item.cryptoName" class="coin-img" />
 
-            <button mat-icon-button color="warn" (click)="removeFavourite(item)">
-              <mat-icon>delete</mat-icon>
-            </button>
+           
           </div>
 
           <h3>{{ item.cryptoName }}</h3>
@@ -38,6 +36,17 @@
           <div class="info-row">
             <span>Added On</span>
             <strong>{{ item.createdAt | date:'dd-MM-yyyy' }}</strong>
+          </div>
+          <div class="card-actions">
+            <button mat-raised-button color="primary" (click)="buyCoin(item)">
+              <mat-icon>shopping_cart</mat-icon>
+              Buy
+            </button>
+
+            <button mat-stroked-button color="warn" (click)="removeFavourite(item)">
+              <mat-icon>delete</mat-icon>
+              Remove
+            </button>
           </div>
         </mat-card>
       }

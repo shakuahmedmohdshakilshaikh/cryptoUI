@@ -1,0 +1,34 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <h2>Create Account</h2>
+
+    <mat-form-field class="full-width">
+      <mat-label>Full Name</mat-label>
+      <input matInput [(ngModel)]="model.userfullname">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="model.email">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" [(ngModel)]="model.password">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Phone</mat-label>
+      <input matInput [(ngModel)]="model.phoneNumber">
+    </mat-form-field>
+
+    @if(message){ <p class="success">{{message}}</p> }
+    @if(errorMessage){ <p class="error">{{errorMessage}}</p> }
+
+    <button mat-raised-button color="primary" class="full-width" (click)="register()">
+      Register
+    </button>
+
+    <a routerLink="/login">Already have account?</a>
+  </mat-card>
+</div>

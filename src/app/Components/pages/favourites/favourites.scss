@@ -19,6 +19,7 @@
   padding: 16px;
   border: 1px solid #ececf3;
   box-shadow: none;
+  background: #fff;
 }
 
 .fav-top {
@@ -43,6 +44,26 @@
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
+  gap: 10px;
+}
+
+.info-row span {
+  color: #6b7280;
+}
+
+.info-row strong {
+  text-align: right;
+  word-break: break-word;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.card-actions button {
+  flex: 1;
 }
 
 .error {

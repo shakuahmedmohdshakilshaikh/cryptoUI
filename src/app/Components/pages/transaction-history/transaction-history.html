@@ -1,0 +1,95 @@
+<div class="transaction-page">
+  <div class="page-header">
+    <h1>Transaction History</h1>
+    <div class="breadcrumb">Home / Transactions</div>
+  </div>
+
+  <mat-card class="transaction-card">
+    <div class="card-header">
+      <div class="left-title">
+        <span class="red-dot"></span>
+        <h3>All Transactions</h3>
+      </div>
+
+      <div class="count-badge">
+        {{ transactions.length }} Transactions
+      </div>
+    </div>
+
+    @if (loading) {
+      <div class="empty-state">
+        <p>Loading...</p>
+      </div>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (!loading && transactions.length > 0) {
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="transactions" class="transaction-table">
+
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>TYPE</th>
+            <td mat-cell *matCellDef="let row">
+              <span
+                class="type-badge"
+                [class.buy]="row.type === 'Buy'"
+                [class.sell]="row.type === 'Sell'">
+                {{ row.type === 'Buy' ? '+ ' + row.type : '- ' + row.type }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="coin">
+            <th mat-header-cell *matHeaderCellDef>COIN</th>
+            <td mat-cell *matCellDef="let row">
+              <div class="coin-cell">
+                <div class="coin-name">{{ row.cryptoName }}</div>
+                <div class="coin-symbol">{{ row.symbol }}</div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef>QUANTITY</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.quantity }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>AMOUNT</th>
+            <td mat-cell *matCellDef="let row">
+              ₹{{ row.totalAmount | number:'1.2-2' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>DATE</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.createdAt | date:'dd/MM/yy, hh:mm a' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="notes">
+            <th mat-header-cell *matHeaderCellDef>NOTES</th>
+            <td mat-cell *matCellDef="let row">
+              {{ getNote(row) }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+    }
+
+    @if (!loading && transactions.length === 0) {
+      <div class="empty-state">
+        <p>No transactions found</p>
+      </div>
+    }
+  </mat-card>
+</div>

@@ -14,7 +14,7 @@ export class Sidebar {
     { icon: 'currency_bitcoin', label: 'Crypto', route: '/crypto' },
     { icon: 'account_balance_wallet', label: 'My Wallet', route: '/wallet' },
     { icon: 'favorite_border', label: 'Favorites', route: '/favourites' },
-    { icon: 'add_circle_outline', label: 'Add Money', route: '/add-money' },
+    { icon: 'history', label: 'Transaction History', route: '/transactions' },
     { icon: 'settings', label: 'Settings', route: '/settings' }
   ];
 }
