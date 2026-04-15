@@ -15,6 +15,6 @@ export class Sidebar {
     { icon: 'account_balance_wallet', label: 'My Wallet', route: '/wallet' },
     { icon: 'favorite_border', label: 'Favorites', route: '/favourites' },
     { icon: 'history', label: 'Transaction History', route: '/transactions' },
-    { icon: 'settings', label: 'Settings', route: '/settings' }
+    { icon: 'Logout', label: 'logout', route: '/login' }
   ];
 }

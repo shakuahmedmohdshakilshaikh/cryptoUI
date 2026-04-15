@@ -4,6 +4,7 @@ import { MaterialModule } from '../../../Material.Module';
 
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../Services/auth-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password',
@@ -13,8 +14,9 @@ import { AuthService } from '../../../Services/auth-service';
 })
 export class ResetPassword {
 
-  model = {
+   model = {
     email: '',
+    otp: '',
     newPassword: '',
     confirmPassword: ''
   };
@@ -22,12 +24,27 @@ export class ResetPassword {
   message = '';
   errorMessage = '';
 
-  constructor(private auth: AuthService) {}
+  constructor(private authService: AuthService,
+    private router: Router
+  ) {}
 
   reset(): void {
-    this.auth.resetPassword(this.model).subscribe({
-      next: (res) => this.message = res.message,
-      error: (err) => this.errorMessage = err?.error?.message
+    this.message = '';
+    this.errorMessage = '';
+
+    this.authService.resetPassword(this.model).subscribe({
+      next: (res) => {
+        this.message = res?.message || 'Password reset successful';
+
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 500);
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = err?.error?.error || err?.error?.message || 'Reset failed';
+      }
     });
   }
+
 }

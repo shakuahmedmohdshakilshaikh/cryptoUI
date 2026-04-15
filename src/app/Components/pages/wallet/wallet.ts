@@ -16,20 +16,39 @@ declare var Razorpay: any;
   styleUrl: './wallet.scss',
 })
 export class Wallet implements OnInit {
-  userId = 7;
+  userId = 0;
 
   balance = 0;
   transactions: any[] = [];
   loading = false;
   errorMessage = '';
 
-  addAmount = 2000;
+  addAmount = 1000;
   deductAmount = 500;
 
   constructor(private walletService: WalletService) {}
 
   ngOnInit(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.userId = this.getStoredUserId();
+
+    if (this.userId <= 0) {
+      this.errorMessage = 'User not logged in';
+      return;
+    }
+
     this.loadWalletData();
+  }
+
+  private getStoredUserId(): number {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return 0;
+    }
+
+    return Number(window.localStorage.getItem('userId')) || 0;
   }
 
   loadWalletData(): void {
@@ -39,10 +58,14 @@ export class Wallet implements OnInit {
     this.walletService.getBalance(this.userId).subscribe({
       next: (balanceRes) => {
         this.balance = balanceRes?.data || 0;
+        console.log(balanceRes);
+        
 
         this.walletService.getTransactions(this.userId).subscribe({
           next: (txRes) => {
             this.transactions = txRes?.data || [];
+            console.log(txRes);
+            
             this.loading = false;
           },
           error: (err) => {

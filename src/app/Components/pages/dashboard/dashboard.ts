@@ -13,7 +13,7 @@ import { Dashboard as dashboard} from '../../../Services/dashboard';
   styleUrl: './dashboard.scss'
 })
 export class Dashboard implements OnInit {
-  userId = 4;
+  userId = 0;
 
   loading = false;
   errorMessage = '';
@@ -64,7 +64,26 @@ export class Dashboard implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.userId = this.getStoredUserId();
+
+    if (this.userId <= 0) {
+      this.errorMessage = 'User not logged in';
+      return;
+    }
+
     this.loadDashboard();
+  }
+
+  private getStoredUserId(): number {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return 0;
+    }
+
+    return Number(window.localStorage.getItem('userId')) || 0;
   }
 
   loadDashboard(): void {

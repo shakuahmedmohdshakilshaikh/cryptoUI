@@ -2,18 +2,25 @@
   <mat-card class="auth-card">
     <h2>Verify 2FA</h2>
 
-    <mat-form-field class="full-width">
-      <input matInput placeholder="Email" [(ngModel)]="model.email">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="model.email" readonly />
     </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <input matInput placeholder="Code" [(ngModel)]="model.code">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>OTP Code</mat-label>
+      <input matInput [(ngModel)]="model.code" />
     </mat-form-field>
 
-    @if(message){ <p class="success">{{message}}</p> }
-    @if(errorMessage){ <p class="error">{{errorMessage}}</p> }
+    @if (message) {
+      <p class="success">{{ message }}</p>
+    }
 
-    <button mat-raised-button color="primary" (click)="verify()">
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    <button mat-raised-button color="primary" class="full-width" (click)="verify()">
       Verify
     </button>
   </mat-card>

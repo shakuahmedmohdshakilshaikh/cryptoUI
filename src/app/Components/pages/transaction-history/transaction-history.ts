@@ -12,7 +12,7 @@ import { TransactionServices } from '../../../Services/transaction-services';
   styleUrl: './transaction-history.scss',
 })
 export class TransactionHistory implements OnInit {
-  userId = 3;
+  userId = 0;
 
   transactions: any[] = [];
   loading = false;
@@ -30,7 +30,26 @@ export class TransactionHistory implements OnInit {
   constructor(private walletService: TransactionServices) {}
 
   ngOnInit(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.userId = this.getStoredUserId();
+
+    if (this.userId <= 0) {
+      this.errorMessage = 'User not logged in';
+      return;
+    }
+
     this.loadTransactions();
+  }
+
+  private getStoredUserId(): number {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return 0;
+    }
+
+    return Number(window.localStorage.getItem('userId')) || 0;
   }
 
   loadTransactions(): void {

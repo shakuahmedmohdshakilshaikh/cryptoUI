@@ -13,11 +13,10 @@ import { AuthService } from '../../../Services/auth-service';
   styleUrl: './register.scss'
 })
 export class Register {
-
   model = {
     userfullname: '',
     email: '',
-    password: '',
+    passWord: '',
     phoneNumber: ''
   };
 
@@ -25,16 +24,19 @@ export class Register {
   message = '';
   errorMessage = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   register(): void {
     this.loading = true;
     this.message = '';
     this.errorMessage = '';
 
-    this.auth.register(this.model).subscribe({
+    this.authService.register(this.model).subscribe({
       next: (res) => {
-        this.message = res.message;
+        this.message = res?.message || 'Registered successfully';
         this.loading = false;
 
         setTimeout(() => {
@@ -42,7 +44,8 @@ export class Register {
         }, 1000);
       },
       error: (err) => {
-        this.errorMessage = err?.error?.message || 'Register failed';
+        console.error(err);
+        this.errorMessage = err?.error?.error || err?.error?.message || 'Register failed';
         this.loading = false;
       }
     });

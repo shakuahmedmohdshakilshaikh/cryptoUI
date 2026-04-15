@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrl: './crypto.scss',
 })
 export class Crypto implements OnInit {
-  userId = 3;
+  userId = 0;
 
   currency = 'inr';
   currentPage = 1;
@@ -41,10 +41,18 @@ export class Crypto implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.userId = Number(localStorage.getItem('userId')) || 0;
+    console.log('stored userId =', localStorage.getItem('userId'));
+    console.log('parsed userId =', this.userId);
+
     this.loadCoins();
   }
 
-   loadCoins(): void {
+  loadCoins(): void {
     this.loading = true;
     this.errorMessage = '';
 
@@ -129,14 +137,20 @@ export class Crypto implements OnInit {
   }
 
   buyCoin(coin: any): void {
-    const amountText = prompt(`Enter amount to buy ${coin.cryptoName}`, '1000');
+    if (!this.userId || this.userId <= 0) {
+      alert('You must be logged in to buy crypto.');
+      return;
+    }
+
+    const name = coin.cryptoName || coin.cryptoname || 'coin';
+    const amountText = prompt(`Enter amount to buy ${name}`, '1000');
 
     if (!amountText) return;
 
     const amount = Number(amountText);
 
     if (isNaN(amount) || amount <= 0) {
-      alert('Please enter valid amount');
+      alert('Please enter a valid amount');
       return;
     }
 
@@ -146,30 +160,43 @@ export class Crypto implements OnInit {
       amount: amount
     };
 
+    console.log('buy payload', payload);
+
     this.crypto.buycoin(payload).subscribe({
       next: () => {
-        alert(`${coin.cryptoName} bought successfully`);
+        alert(`${name} bought successfully`);
+        this.loadCoins();
       },
       error: (err) => {
-        console.error(err);
-        alert('Buy failed');
+        console.error('Buy failed', err);
+        console.error('Buy error body', err.error);
+        const message = err?.error?.message || err?.message || 'Buy failed';
+        alert(message);
       }
     });
   }
 
   addToFavourite(coin: any): void {
+    if (!this.userId || this.userId <= 0) {
+      alert('You must be logged in first.');
+      return;
+    }
+
     const payload = {
       userId: this.userId,
       cryptoId: coin.cryptoId
     };
+
+    console.log('favourite payload', payload);
 
     this.crypto.addToFavorites(payload).subscribe({
       next: () => {
         alert(`${coin.cryptoName} added to favourites`);
       },
       error: (err) => {
-        console.error(err);
-        alert('Failed to add favourite');
+        console.error('Favourite failed', err);
+        console.error('Favourite error body', err.error);
+        alert(err?.error?.message || 'Failed to add favourite');
       }
     });
   }

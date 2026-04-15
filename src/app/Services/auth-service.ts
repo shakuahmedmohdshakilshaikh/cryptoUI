@@ -1,32 +1,33 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../environments/environment.development';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = `${environment.apiUrl}auth`;
+  private platformId = inject(PLATFORM_ID);
 
   constructor(private http: HttpClient) {}
 
   register(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}auth/register`, data);
+    return this.http.post<any>(`${this.apiUrl}/register`, data);
   }
 
   login(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}auth/login`, data).pipe(
+    return this.http.post<any>(`${this.apiUrl}/login`, data).pipe(
       tap((res) => {
-        const token = res?.data?.token;
+        const token = res?.data?.token || res?.token;
 
-        if (typeof window !== 'undefined' && token) {
-          localStorage.setItem('token', token);
+        if (token) {
+          this.saveToken(token);
 
           const userId = this.getUserIdFromToken(token);
           if (userId) {
-            localStorage.setItem('userId', userId);
+            this.saveUserId(userId);
           }
         }
       })
@@ -45,30 +46,93 @@ export class AuthService {
   }
 
   setup2FA(email: string): Observable<any> {
-    return this.http.get<any>(
-      `${this.apiUrl}/setup-2fa?email=${encodeURIComponent(email)}`
+    return this.http.post<any>(
+      `${this.apiUrl}/setup-2fa?email=${encodeURIComponent(email)}`,
+      {}
     );
   }
 
   verify2FA(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/verify-2fa`, data);
-  }
+    return this.http.post<any>(`${this.apiUrl}/verify-2fa`, data).pipe(
+      tap((res) => {
+        const token = res?.data?.token || res?.token;
 
-  logout(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
-    }
+        if (token) {
+          this.saveToken(token);
+
+          const userId = this.getUserIdFromToken(token);
+          if (userId) {
+            this.saveUserId(userId);
+          }
+
+          this.removeTempEmail();
+          this.removeTempQr();
+        }
+      })
+    );
   }
 
   isLoggedIn(): boolean {
-    return typeof window !== 'undefined' && !!localStorage.getItem('token');
+    if (!this.isBrowser()) return false;
+    return !!localStorage.getItem('token');
+  }
+
+  getToken(): string | null {
+    if (!this.isBrowser()) return null;
+    return localStorage.getItem('token');
+  }
+
+  saveToken(token: string): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('token', token);
   }
 
   getUserId(): number {
-    return typeof window !== 'undefined'
-      ? Number(localStorage.getItem('userId')) || 0
-      : 0;
+    if (!this.isBrowser()) return 0;
+    return Number(localStorage.getItem('userId')) || 0;
+  }
+
+  saveUserId(userId: string): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('userId', userId);
+  }
+
+  saveTempEmail(email: string): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('tempEmail', email);
+  }
+
+  getTempEmail(): string {
+    if (!this.isBrowser()) return '';
+    return localStorage.getItem('tempEmail') || '';
+  }
+
+  removeTempEmail(): void {
+    if (!this.isBrowser()) return;
+    localStorage.removeItem('tempEmail');
+  }
+
+  saveTempQr(qr: string): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('tempQr', qr);
+  }
+
+  getTempQr(): string {
+    if (!this.isBrowser()) return '';
+    return localStorage.getItem('tempQr') || '';
+  }
+
+  removeTempQr(): void {
+    if (!this.isBrowser()) return;
+    localStorage.removeItem('tempQr');
+  }
+
+  logout(): void {
+    if (!this.isBrowser()) return;
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('tempEmail');
+    localStorage.removeItem('tempQr');
   }
 
   private getUserIdFromToken(token: string): string | null {
@@ -78,5 +142,9 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  private isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
   }
 }

@@ -2,33 +2,40 @@
   <mat-card class="auth-card">
     <h2>Create Account</h2>
 
-    <mat-form-field class="full-width">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Full Name</mat-label>
-      <input matInput [(ngModel)]="model.userfullname">
+      <input matInput [(ngModel)]="model.userfullname" />
     </mat-form-field>
 
-    <mat-form-field class="full-width">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Email</mat-label>
-      <input matInput [(ngModel)]="model.email">
+      <input matInput [(ngModel)]="model.email" />
     </mat-form-field>
 
-    <mat-form-field class="full-width">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Password</mat-label>
-      <input matInput type="password" [(ngModel)]="model.password">
+      <input matInput type="password" [(ngModel)]="model.passWord" />
     </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <mat-label>Phone</mat-label>
-      <input matInput [(ngModel)]="model.phoneNumber">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Phone Number</mat-label>
+      <input matInput [(ngModel)]="model.phoneNumber" />
     </mat-form-field>
 
-    @if(message){ <p class="success">{{message}}</p> }
-    @if(errorMessage){ <p class="error">{{errorMessage}}</p> }
+    @if (message) {
+      <p class="success">{{ message }}</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
 
     <button mat-raised-button color="primary" class="full-width" (click)="register()">
       Register
     </button>
 
-    <a routerLink="/login">Already have account?</a>
+    <div class="auth-links">
+      <a routerLink="/login">Already have an account?</a>
+    </div>
   </mat-card>
 </div>

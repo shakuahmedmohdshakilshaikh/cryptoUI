@@ -9,7 +9,7 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Password</mat-label>
-      <input matInput type="password" [(ngModel)]="model.password" />
+      <input matInput type="password" [(ngModel)]="model.passWord" />
     </mat-form-field>
 
     @if (errorMessage) {
@@ -23,7 +23,6 @@
     <div class="auth-links">
       <a routerLink="/register">Create account</a>
       <a routerLink="/forgot-password">Forgot password?</a>
-      <a routerLink="/verify-2fa">Verify 2FA</a>
     </div>
   </mat-card>
 </div>

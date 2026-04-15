@@ -1,11 +1,15 @@
-<div class="app-layout">
-  <app-sidebar></app-sidebar>
+<ng-container *ngIf="showLayout; else authPage">
+  <app-header></app-header>
 
-  <div class="main-section">
-    <app-header></app-header>
+  <div class="main-layout">
+   <app-sidebar></app-sidebar>
 
     <div class="page-content">
       <router-outlet></router-outlet>
     </div>
   </div>
-</div>
+</ng-container>
+
+<ng-template #authPage>
+  <router-outlet></router-outlet>
+</ng-template>

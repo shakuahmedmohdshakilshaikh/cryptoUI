@@ -13,6 +13,10 @@ import { Verify2fa } from './Components/pages/verify2fa/verify2fa';
 import { authGuard } from './gaurds/auth-guard';
 
 export const routes: Routes = [
+  
+  
+
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
      { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'forgot-password', component: ForgotPassword },
@@ -26,7 +30,6 @@ export const routes: Routes = [
   { path: 'wallet', component: Wallet, canActivate: [authGuard] },
   { path: 'transactions', component: TransactionHistory, canActivate: [authGuard] },
 
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
   
  

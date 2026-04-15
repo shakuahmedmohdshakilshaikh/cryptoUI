@@ -9,7 +9,7 @@ import { CryptoService } from '../../../Services/CryptoService';
   styleUrl: './favourites.scss',
 })
 export class Favourites implements OnInit {
-  userId = 3;
+  userId = 0;
 
   favourites: any[] = [];
   loading = false;
@@ -17,8 +17,30 @@ export class Favourites implements OnInit {
 
   constructor(private crypto: CryptoService) {}
 
-  ngOnInit(): void {
-    this.loadFavourites();
+ ngOnInit(): void {
+  console.log('stored userId:', localStorage.getItem('userId'));
+
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  this.userId = this.getStoredUserId();
+  console.log('parsed userId:', this.userId);
+
+  if (this.userId <= 0) {
+    this.errorMessage = 'User not logged in';
+    return;
+  }
+
+  this.loadFavourites();
+}
+
+  private getStoredUserId(): number {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return 0;
+    }
+
+    return Number(window.localStorage.getItem('userId')) || 0;
   }
 
   loadFavourites(): void {
@@ -52,12 +74,19 @@ export class Favourites implements OnInit {
   }
 
   buyCoin(item: any): void {
-    const amountText  =  prompt(`Enter amount to buy ${item.cryptoname}`, '1000');
-
-    if(!amountText){
+    if (!this.userId || this.userId <= 0) {
+      alert('You must be logged in to buy crypto.');
       return;
     }
-      const amount = Number(amountText);
+
+    const name = item.cryptoName || item.cryptoname || 'coin';
+    const amountText = prompt(`Enter amount to buy ${name}`, '1000');
+
+    if (!amountText) {
+      return;
+    }
+
+    const amount = Number(amountText);
 
     if (isNaN(amount) || amount <= 0) {
       alert('Please enter valid amount');
@@ -70,14 +99,17 @@ export class Favourites implements OnInit {
       amount: amount
     };
 
+    console.log('buy payload', payload);
+
     this.crypto.buycoin(payload).subscribe({
       next: (res) => {
         console.log(res);
-        alert(`${item.cryptoName} bought successfully`);
+        alert(`${name} bought successfully`);
       },
       error: (err) => {
-        console.error(err);
-        alert('Buy failed');
+        console.error('Buy failed', err);
+        const message = err?.error?.message || err?.message || 'Buy failed';
+        alert(message);
       }
     });
   }

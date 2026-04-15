@@ -4,6 +4,7 @@ import { MaterialModule } from '../../../Material.Module';
 
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../Services/auth-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
@@ -13,19 +14,32 @@ import { AuthService } from '../../../Services/auth-service';
 })
 export class ForgotPassword {
 
-  email = '';
+   email = '';
   message = '';
   errorMessage = '';
 
-  constructor(private auth: AuthService) {}
+  constructor(private authService: AuthService,
+     private router : Router
+  ) {}
 
   submit(): void {
     this.message = '';
     this.errorMessage = '';
 
-    this.auth.forgotPassword(this.email).subscribe({
-      next: (res) => this.message = res.message,
-      error: (err) => this.errorMessage = err?.error?.message
+    this.authService.forgotPassword(this.email).subscribe({
+      next: (res) => {
+        this.message = res?.message || 'OTP sent';
+  
+        localStorage.setItem('resetEmail', this.email);
+
+        setTimeout(() => {
+          this.router.navigate(['/reset-password']);
+        }, 500);
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = err?.error?.error || err?.error?.message || 'Failed';
+      }
     });
   }
 }
