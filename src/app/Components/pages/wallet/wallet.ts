@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MaterialModule } from '../../../Material.Module';
 import { WalletService } from '../../../Services/wallet-service';
+import { error } from 'node:console';
+import { CryptoService } from '../../../Services/CryptoService';
 
 declare var Razorpay: any;
 
@@ -26,7 +28,7 @@ export class Wallet implements OnInit {
   addAmount = 1000;
   deductAmount = 500;
 
-  constructor(private walletService: WalletService) {}
+  constructor(private walletService: WalletService, private crypto: CryptoService) {}
 
   ngOnInit(): void {
     if (typeof window === 'undefined') {
@@ -41,6 +43,7 @@ export class Wallet implements OnInit {
     }
 
     this.loadWalletData();
+   
   }
 
   private getStoredUserId(): number {
@@ -164,5 +167,73 @@ export class Wallet implements OnInit {
         alert('Failed to deduct balance');
       }
     });
+
+
   }
+
+  buyCoins(row: any): void {
+  console.log('Selected row:', row);
+
+  const name = row.cryptoName;
+  const amountText = prompt(`Enter amount to buy ${name}`, '1000');
+
+  if (!amountText) return;
+
+  const amount = Number(amountText);
+
+  if (isNaN(amount) || amount <= 0) {
+    alert('Please enter a valid amount');
+    return;
+  }
+
+  if (!row?.cryptoId) {
+    alert('cryptoId is missing in this row');
+    console.log('Invalid row:', row);
+    return;
+  }
+
+  const payload = {
+    userId: this.userId,
+    cryptoId: row.cryptoId,
+    amount: amount
+  };
+
+  this.walletService.buycoin(payload).subscribe({
+    next: () => {
+      alert(`${name} bought successfully`);
+      this.loadWalletData();
+    },
+    error: (err) => {
+      console.error(err);
+      alert(err?.error?.message || 'Buy failed');
+    }
+  });
+  }
+
+  
+  sellcoins( coin: any) : void{
+    var quantity = coin.quantity;
+    var coinQuantity  = prompt(`Enter the Quantity to sell ${quantity}`)
+   
+   const quantityText = Number(coinQuantity)
+    const sellPayload = { 
+    userId: this.userId,
+     cryptoId: coin.cryptoId,
+    quantity: quantityText
+    }
+
+    this.walletService.sellCoins(sellPayload).subscribe({
+      next : (res) =>{
+        console.log('Quantity', res);
+        
+        alert(`{coinQuantity} sell successfully`);
+      },
+
+      error(err) {
+        console.error(err.error || 'Failed to Sell');
+        
+      },
+    })
+  }
+
 }

@@ -12,27 +12,18 @@ export class Dashboard {
 
   constructor(private http: HttpClient){}
 
-  getCoins(currency: any, pageNumber: number, pageSize: number, searchText: string, sortBy: string, sortOrder: string,): Observable<any> {
-    let params = new HttpParams()
-      .set('Currency', currency)
-      .set('PageNumber', pageNumber)
-      .set('PageSize', pageSize);
-
-    if (searchText && searchText.trim() !== '') {
-      params = params.set('SearchText', searchText);
-    }
-
-    if (sortBy && sortBy.trim() !== '') {
-      params = params.set('SortBy', sortBy);
-    }
-
-    if (sortOrder && sortOrder.trim() !== '') {
-      params = params.set('SortOrder', sortOrder);
-    }
-
-    return this.http.get<any>(`${this.apiUrl}crypto/get-coins`, { params });
-  }
-
+   getCoins(
+  currency: string,
+  pageNumber: number,
+  pageSize: number,
+  searchText: string,
+  sortBy: string,
+  sortOrder: string
+) : Observable<any> {
+  return this.http.get<any>(
+    `${this.apiUrl}crypto/get-coins?Currency=${currency}&PageNumber=${pageNumber}&PageSize=${pageSize}&SearchText=${searchText}&SortBy=${sortBy}&SortOrder=${sortOrder}`
+  );
+}
   fetchCoins(userId : number):Observable<any>{
     return this.http.get<any>(`${this.apiUrl}dashboard?userId=${userId}`);
   }

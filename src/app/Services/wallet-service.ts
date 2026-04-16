@@ -32,4 +32,11 @@ export class WalletService {
     return this.http.get<any>(`${this.apiurl}portfolio/transactions/${userId}`);
   }
 
+  buycoin(data:any) : Observable<any>{
+    return this.http.post<any>(`${this.apiurl}portfolio/buy`, data);
+  }
+
+  sellCoins(data:any):Observable<any>{
+    return this.http.post(`${this.apiurl}portfolio/sell`,data);
+  }
 }

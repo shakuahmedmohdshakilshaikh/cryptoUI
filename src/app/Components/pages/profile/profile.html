@@ -1,0 +1,49 @@
+<div class="profile-container" *ngIf="user">
+  <mat-card class="profile-card">
+    <mat-card-title>My Profile</mat-card-title>
+
+    <mat-card-content>
+      <p><strong>User ID:</strong> {{ user.userId }}</p>
+      <p><strong>Name:</strong> {{ user.userFullName }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Phone:</strong> {{ user.phoneNumber }}</p>
+      <p><strong>Role:</strong> {{ user.role }}</p>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="openEditDialog()">
+        Update
+      </button>
+
+      <button mat-raised-button color="warn" (click)="deleteUser()">
+        Delete
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</div>
+
+<ng-template #editDialog>
+  <h2 mat-dialog-title>Update Profile</h2>
+
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Full Name</mat-label>
+      <input matInput [(ngModel)]="editUserData.userFullName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Phone Number</mat-label>
+      <input matInput [(ngModel)]="editUserData.phoneNumber" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" (click)="updateUser()">
+      Save
+    </button>
+  </mat-dialog-actions>
+</ng-template>

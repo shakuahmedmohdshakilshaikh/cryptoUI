@@ -7,21 +7,7 @@ import { AuthService } from '../Services/auth-service';
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  const platformId = inject(PLATFORM_ID);
-
   
-
-  const tokens = localStorage.getItem('token');
-  const userId = localStorage.getItem('userId');
-
-  if (tokens && userId) {
-    return true;
-  }
-
-  // During SSR, allow rendering and let browser handle real auth check later
-  if (!isPlatformBrowser(platformId)) {
-    return true;
-  }
 
   const token = authService.getToken();
 

@@ -31,6 +31,14 @@
       </h2>
     </mat-card>
 
+    <mat-card>
+      <p>Percentage</p>
+      <h2 [class.green]="dashboardData?.profitLossPercentage >= 0"
+          [class.red]="dashboardData?.profitLossPercentage < 0">
+         {{ dashboardData?.profitLossPercentage || 0 }} %
+      </h2>
+    </mat-card>
+
       </div>
 
       <div class="grid">
@@ -95,8 +103,8 @@
       />
     </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="onSearch()">Search</button>
-    <button mat-stroked-button (click)="clearSearch()">Clear</button>
+    <!-- <button mat-raised-button color="primary" (click)="onSearch()">Search</button>
+    <button mat-stroked-button (click)="clearSearch()">Clear</button> -->
 
     <mat-form-field appearance="outline" class="page-size-box">
       <mat-label>Page Size</mat-label>

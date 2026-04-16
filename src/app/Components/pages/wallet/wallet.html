@@ -63,20 +63,23 @@
       <div class="table-wrapper">
         <table mat-table [dataSource]="transactions" class="holdings-table">
 
-          <ng-container matColumnDef="cryptoName">
-            <th mat-header-cell *matHeaderCellDef>COIN</th>
-            <td mat-cell *matCellDef="let row">
-              <div class="coin-cell">
-                <div class="coin-avatar">
-                  {{ row.symbol?.charAt(0) }}
-                </div>
-                <div>
-                  <div class="coin-name">{{ row.cryptoName }}</div>
-                  <div class="coin-symbol">{{ row.symbol }}</div>
-                </div>
-              </div>
-            </td>
-          </ng-container>
+       <ng-container matColumnDef="cryptoName">
+  <th mat-header-cell *matHeaderCellDef>COIN</th>
+  <td mat-cell *matCellDef="let row">
+    <div class="coin-cell">
+      <img
+        [src]="row.image"
+        [alt]="row.cryptoName"
+        class="coin-avatar"
+      />
+
+      <div>
+        <div class="coin-name">{{ row.cryptoName }}</div>
+        <div class="coin-symbol">{{ row.symbol }}</div>
+      </div>
+    </div>
+  </td>
+</ng-container>
 
           <ng-container matColumnDef="quantity">
             <th mat-header-cell *matHeaderCellDef>QUANTITY</th>
@@ -95,9 +98,15 @@
           <ng-container matColumnDef="transactionType">
             <th mat-header-cell *matHeaderCellDef>ACTIONS</th>
             <td mat-cell *matCellDef="let row">
+               <!-- {{ row | json }} -->
               <span class="tx-badge" [class.buy]="row.transactionType === 'Buy'" [class.sell]="row.transactionType === 'Sell'">
                 {{ row.transactionType }}
               </span>
+
+              <button mat-button color="primary" (click)="buyCoins(row)">Buy</button>
+
+              <button mat-button color="red" (click)="sellcoins(row)">sell</button>
+
             </td>
           </ng-container>
 

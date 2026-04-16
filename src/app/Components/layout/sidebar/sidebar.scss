@@ -1,3 +1,5 @@
+
+
 .sidebar {
   width: 240px;
   min-height: 100vh;
@@ -7,16 +9,22 @@
   box-sizing: border-box;
 }
 
+.logo{
+  display: flex;
+}
+
+
+
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 130px;
   margin-bottom: 26px;
   padding: 4px 6px;
 }
 
 .brand-icon {
-  width: 54px;
+  width: 30px;
   height: 34px;
   border-radius: 10px;
   display: flex;
@@ -27,7 +35,7 @@
 }
 
 .brand-text {
-  font-size: 15px;
+  font-size: 25px;
   font-weight: 700;
   color: #5d6be6;
 }
