@@ -37,13 +37,13 @@
     }
 
     @if (!loading) {
-    <mat-paginator
-  [length]="totalRecords"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="[5, 10, 15, 20]"
-  [pageIndex]="currentPage > 0 ? currentPage - 1 : 0"
-  (page)="onPageChange($event)">
-</mat-paginator>
+      <mat-paginator
+        [length]="totalRecords"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[5, 10, 15, 20]"
+        [pageIndex]="currentPage > 0 ? currentPage - 1 : 0"
+        (page)="onPageChange($event)">
+      </mat-paginator>
 
       <div class="table-wrapper">
         <table mat-table [dataSource]="coins" class="full-width">
@@ -98,11 +98,19 @@
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let row">
               <div class="action-buttons">
-                <button mat-icon-button color="primary" (click)="buyCoin(row)" matTooltip="Buy">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="openBuyDialog(row)"
+                  matTooltip="Buy">
                   <mat-icon>shopping_cart</mat-icon>
                 </button>
 
-                <button mat-icon-button color="warn" (click)="addToFavourite(row)" matTooltip="Favourite">
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="addToFavourite(row)"
+                  matTooltip="Favourite">
                   <mat-icon>favorite</mat-icon>
                 </button>
               </div>
@@ -128,3 +136,31 @@
     }
   </mat-card>
 </div>
+
+<ng-template #buyDialog>
+  <h2 mat-dialog-title>Buy {{ selectedCoin?.cryptoName }}</h2>
+
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Enter Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="buyAmount"
+        (input)="onAmountChange()"
+        placeholder="Enter amount" />
+    </mat-form-field>
+
+    <div class="buy-info-card">
+      <p><strong>Coin:</strong> {{ selectedCoin?.cryptoName }}</p>
+      <p><strong>Symbol:</strong> {{ selectedCoin?.symbol }}</p>
+      <p><strong>Price Per Unit:</strong> ₹ {{ calculatedPricePerUnit | number:'1.2-2' }}</p>
+      <p><strong>Quantity:</strong> {{ calculatedQuantity | number:'1.6-6' }}</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="closeBuyDialog()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="confirmBuy()">Buy</button>
+  </mat-dialog-actions>
+</ng-template>

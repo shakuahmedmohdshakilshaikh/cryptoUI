@@ -21,8 +21,6 @@
         <mat-card class="fav-card">
           <div class="fav-top">
             <img [src]="item.image" [alt]="item.cryptoName" class="coin-img" />
-
-           
           </div>
 
           <h3>{{ item.cryptoName }}</h3>
@@ -30,15 +28,16 @@
 
           <div class="info-row">
             <span>Crypto Price</span>
-            <strong>{{ item.currentPrice }}</strong>
+            <strong>₹ {{ item.currentPrice | number:'1.2-2' }}</strong>
           </div>
 
           <div class="info-row">
             <span>Added On</span>
             <strong>{{ item.createdAt | date:'dd-MM-yyyy' }}</strong>
           </div>
+
           <div class="card-actions">
-            <button mat-raised-button color="primary" (click)="buyCoin(item)">
+            <button mat-raised-button color="primary" (click)="openBuyDialog(item)">
               <mat-icon>shopping_cart</mat-icon>
               Buy
             </button>
@@ -53,3 +52,31 @@
     </div>
   }
 </div>
+
+<ng-template #buyDialog>
+  <h2 mat-dialog-title>Buy {{ selectedCoin?.cryptoName }}</h2>
+
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Enter Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="buyAmount"
+        (input)="onAmountChange()"
+        placeholder="Enter amount">
+    </mat-form-field>
+
+    <div class="buy-info-card">
+      <p><strong>Coin:</strong> {{ selectedCoin?.cryptoName }}</p>
+      <p><strong>Symbol:</strong> {{ selectedCoin?.symbol }}</p>
+      <p><strong>Price Per Unit:</strong> ₹ {{ calculatedPricePerUnit | number:'1.2-2' }}</p>
+      <p><strong>Quantity:</strong> {{ calculatedQuantity | number:'1.6-6' }}</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="closeBuyDialog()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="confirmBuy()">Buy</button>
+  </mat-dialog-actions>
+</ng-template>

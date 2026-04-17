@@ -1,23 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-
-
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MaterialModule } from '../../../Material.Module';
 import { WalletService } from '../../../Services/wallet-service';
-import { error } from 'node:console';
 import { CryptoService } from '../../../Services/CryptoService';
+import { MatDialog, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 declare var Razorpay: any;
 
 @Component({
   selector: 'app-wallet',
-  imports: [MaterialModule, FormsModule, CommonModule, RouterLink],
+  imports: [MaterialModule, FormsModule, CommonModule, RouterLink, MatDialogContent, MatDialogActions],
   templateUrl: './wallet.html',
   styleUrl: './wallet.scss',
 })
 export class Wallet implements OnInit {
+  @ViewChild('buyDialog') buyDialog!: TemplateRef<any>;
+  @ViewChild('sellDialog') sellDialog!: TemplateRef<any>;
+
   userId = 0;
 
   balance = 0;
@@ -28,7 +30,23 @@ export class Wallet implements OnInit {
   addAmount = 1000;
   deductAmount = 500;
 
-  constructor(private walletService: WalletService, private crypto: CryptoService) {}
+  selectedCoin: any = null;
+
+  buyAmount: number = 0;
+  buyCalculatedQuantity: number = 0;
+  buyCalculatedPricePerUnit: number = 0;
+
+  sellQuantity: number = 0;
+  sellCalculatedPricePerUnit: number = 0;
+  sellCalculatedTotalAmount: number = 0;
+  maxSellQuantity: number = 0;
+
+  constructor(
+    private walletService: WalletService,
+    private crypto: CryptoService,
+    private dialog: MatDialog,
+    private snackBar : MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     if (typeof window === 'undefined') {
@@ -43,8 +61,16 @@ export class Wallet implements OnInit {
     }
 
     this.loadWalletData();
-   
   }
+
+  showToast(message: string, type: 'success' | 'error' = 'success'): void {
+  this.snackBar.open(message, 'Close', {
+    duration: 3000,
+    horizontalPosition: 'right',
+    verticalPosition: 'top',
+    panelClass: type === 'success' ? 'success-snackbar' : 'error-snackbar'
+  });
+}
 
   private getStoredUserId(): number {
     if (typeof window === 'undefined' || !window.localStorage) {
@@ -61,14 +87,10 @@ export class Wallet implements OnInit {
     this.walletService.getBalance(this.userId).subscribe({
       next: (balanceRes) => {
         this.balance = balanceRes?.data || 0;
-        console.log(balanceRes);
-        
 
         this.walletService.getTransactions(this.userId).subscribe({
           next: (txRes) => {
             this.transactions = txRes?.data || [];
-            console.log(txRes);
-            
             this.loading = false;
           },
           error: (err) => {
@@ -88,7 +110,7 @@ export class Wallet implements OnInit {
 
   addMoney(): void {
     if (!this.addAmount || this.addAmount <= 0) {
-      alert('Enter valid amount');
+      this.showToast('Enter valid amount','error');
       return;
     }
 
@@ -104,7 +126,7 @@ export class Wallet implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        alert('Failed to create order');
+        this.showToast('Failed to create order', 'error');
       }
     });
   }
@@ -128,12 +150,12 @@ export class Wallet implements OnInit {
 
         this.walletService.verifyPayment(verifyPayload).subscribe({
           next: () => {
-            alert('Money added successfully');
+            this.showToast('Money added successfully','success');
             this.loadWalletData();
           },
           error: (err) => {
             console.error(err);
-            alert('Payment verification failed');
+            this.showToast('Payment verification failed','error');
           }
         });
       },
@@ -148,7 +170,7 @@ export class Wallet implements OnInit {
 
   deductMoney(): void {
     if (!this.deductAmount || this.deductAmount <= 0) {
-      alert('Enter valid amount');
+      this.showToast('Enter valid amount','error');
       return;
     }
 
@@ -159,81 +181,128 @@ export class Wallet implements OnInit {
 
     this.walletService.deductBalance(payload).subscribe({
       next: () => {
-        alert('Balance deducted');
+        this.showToast('Balance deducted','success');
         this.loadWalletData();
       },
       error: (err) => {
         console.error(err);
-        alert('Failed to deduct balance');
+        this.showToast('Failed to deduct balance','error');
       }
     });
-
-
   }
 
-  buyCoins(row: any): void {
-  console.log('Selected row:', row);
+  openBuyDialog(row: any): void {
+    this.selectedCoin = row;
+    this.buyAmount = 0;
+    this.buyCalculatedPricePerUnit = Number(row.currentPrice || row.pricePerUnit || 0);
+    this.buyCalculatedQuantity = 0;
 
-  const name = row.cryptoName;
-  const amountText = prompt(`Enter amount to buy ${name}`, '1000');
-
-  if (!amountText) return;
-
-  const amount = Number(amountText);
-
-  if (isNaN(amount) || amount <= 0) {
-    alert('Please enter a valid amount');
-    return;
+    this.dialog.open(this.buyDialog, {
+      width: '420px',
+      disableClose: true
+    });
   }
 
-  if (!row?.cryptoId) {
-    alert('cryptoId is missing in this row');
-    console.log('Invalid row:', row);
-    return;
+  onBuyAmountChange(): void {
+    const amount = Number(this.buyAmount) || 0;
+    const price = Number(this.buyCalculatedPricePerUnit) || 0;
+
+    this.buyCalculatedQuantity = price > 0 ? amount / price : 0;
   }
 
-  const payload = {
-    userId: this.userId,
-    cryptoId: row.cryptoId,
-    amount: amount
-  };
-
-  this.walletService.buycoin(payload).subscribe({
-    next: () => {
-      alert(`${name} bought successfully`);
-      this.loadWalletData();
-    },
-    error: (err) => {
-      console.error(err);
-      alert(err?.error?.message || 'Buy failed');
+  confirmBuy(): void {
+    if (!this.selectedCoin) {
+      return;
     }
-  });
+
+    const amount = Number(this.buyAmount);
+
+    if (isNaN(amount) || amount <= 0) {
+      this.showToast('Please enter a valid amount','error');
+      return;
+    }
+
+    if (!this.selectedCoin?.cryptoId) {
+      this.showToast('cryptoId is missing in this row','error');
+      return;
+    }
+
+    const payload = {
+      userId: this.userId,
+      cryptoId: this.selectedCoin.cryptoId,
+      amount: amount
+    };
+
+    this.walletService.buycoin(payload).subscribe({
+      next: () => {
+        this.showToast(`${this.selectedCoin.cryptoName} bought successfully`,'success');
+        this.dialog.closeAll();
+        this.loadWalletData();
+      },
+      error: (err) => {
+        console.error(err);
+        this.showToast(err?.error?.message || 'Buy failed','error');
+      }
+    });
   }
 
-  
-  sellcoins( coin: any) : void{
-    var quantity = coin.quantity;
-    var coinQuantity  = prompt(`Enter the Quantity to sell ${quantity}`)
-   
-   const quantityText = Number(coinQuantity)
-    const sellPayload = { 
-    userId: this.userId,
-     cryptoId: coin.cryptoId,
-    quantity: quantityText
+  openSellDialog(row: any): void {
+    this.selectedCoin = row;
+    this.sellQuantity = 0;
+    this.sellCalculatedPricePerUnit = Number(row.currentPrice || row.pricePerUnit || 0);
+    this.sellCalculatedTotalAmount = 0;
+    this.maxSellQuantity = Number(row.quantity || 0);
+
+    this.dialog.open(this.sellDialog, {
+      width: '420px',
+      disableClose: true
+    });
+  }
+
+  onSellQuantityChange(): void {
+    const quantity = Number(this.sellQuantity) || 0;
+    const price = Number(this.sellCalculatedPricePerUnit) || 0;
+
+    this.sellCalculatedTotalAmount = quantity > 0 && price > 0 ? quantity * price : 0;
+  }
+
+  confirmSell(): void {
+    if (!this.selectedCoin) {
+      return;
     }
+
+    const quantity = Number(this.sellQuantity);
+
+    if (isNaN(quantity) || quantity <= 0) {
+      this.showToast('Please enter valid quantity','error');
+      return;
+    }
+
+    if (quantity > this.maxSellQuantity) {
+      this.showToast(`You can sell maximum ${this.maxSellQuantity}`,'error');
+      return;
+    }
+
+    const sellPayload = {
+      userId: this.userId,
+      cryptoId: this.selectedCoin.cryptoId,
+      quantity: quantity
+    };
 
     this.walletService.sellCoins(sellPayload).subscribe({
-      next : (res) =>{
-        console.log('Quantity', res);
-        
-        alert(`{coinQuantity} sell successfully`);
+      next: () => {
+        this.showToast(`${this.selectedCoin.cryptoName} sold successfully`,'success');
+        this.dialog.closeAll();
+        this.loadWalletData();
       },
-
-      error(err) {
-        console.error(err.error || 'Failed to Sell');
-        
-      },
-    })
+      error: (err) => {
+        console.error(err);
+        this.showToast(err?.error?.message || 'Failed to sell','error');
+      }
+    });
   }
 
+  closeDialog(): void {
+    this.dialog.closeAll();
+  }
 }

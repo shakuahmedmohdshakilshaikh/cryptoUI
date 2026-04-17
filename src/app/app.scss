@@ -6,3 +6,15 @@
   flex: 1;
   padding: 20px;
 }
+
+ .success-snackbar {
+  --mdc-snackbar-container-color: #16a34a !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+  --mat-mdc-snack-bar-button-color: white !important;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #dc2626 !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+  --mat-mdc-snack-bar-button-color: white !important;
+}

@@ -1,83 +1,115 @@
+/* ===== PAGE ===== */
 .favourites-page {
   padding: 20px;
-  background: #f6f7fb;
-  min-height: 100vh;
 }
 
 .page-header {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
+.page-header h2 {
+  font-weight: 600;
+}
+
+/* ===== GRID ===== */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
 
+/* ===== CARD ===== */
 .fav-card {
-  border-radius: 18px;
   padding: 16px;
-  border: 1px solid #ececf3;
-  box-shadow: none;
-  background: #fff;
+  border-radius: 16px;
+  transition: 0.2s;
 }
 
+.fav-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ===== TOP ===== */
 .fav-top {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
 }
 
 .coin-img {
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ===== TEXT ===== */
+h3 {
+  margin: 8px 0;
+  text-align: center;
 }
 
 .symbol {
-  color: #6b7280;
-  text-transform: uppercase;
-  margin-bottom: 14px;
+  text-align: center;
+  color: gray;
+  font-size: 13px;
+  margin-bottom: 10px;
 }
 
+/* ===== INFO ROW ===== */
 .info-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
-  gap: 10px;
+  margin: 6px 0;
+  font-size: 14px;
 }
 
-.info-row span {
-  color: #6b7280;
-}
-
-.info-row strong {
-  text-align: right;
-  word-break: break-word;
-}
-
+/* ===== ACTION BUTTONS ===== */
 .card-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 18px;
+  justify-content: space-between;
+  margin-top: 12px;
 }
 
-.card-actions button {
-  flex: 1;
-}
-
+/* ===== ERROR ===== */
 .error {
   color: red;
+  margin-top: 10px;
 }
 
-@media (max-width: 1200px) {
-  .card-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* ===== DIALOG ===== */
+.w-100 {
+  width: 100%;
 }
 
-@media (max-width: 700px) {
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
+/* ===== BUY POPUP CARD ===== */
+.buy-info-card {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f5f7fb;
+  border: 1px solid #e0e0e0;
+}
+
+.buy-info-card p {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+/* ===== BUTTONS ALIGN ===== */
+mat-dialog-actions {
+  margin-top: 10px;
+}
+
+// .buy-info-card {
+//   background: linear-gradient(135deg, #eef2ff, #f8fafc);
+//   border: none;
+// }
+
+// .fav-card {
+//   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+// }
+
+.fav-card:hover {
+  box-shadow: 0 6px 25px rgba(0,0,0,0.15);
 }

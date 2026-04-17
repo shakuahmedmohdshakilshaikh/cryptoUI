@@ -16,6 +16,8 @@ import { MatSidenavModule  } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
+import { MatDialog, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+
 // import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
@@ -38,6 +40,7 @@ exports: [
     MatMenuModule,
      MatDividerModule,
     MatListModule ,
+    
      
 
 ]

@@ -3,6 +3,9 @@
 // components according to the Material 3 design spec.
 // Learn more about theming and how to use it for your application's
 // custom components at https://material.angular.dev/guide/theming
+
+
+
 @use '@angular/material' as mat;
 
 html {
@@ -23,17 +26,43 @@ body {
   // Default the application to a light color theme. This can be changed to
   // `dark` to enable the dark color theme, or to `light dark` to defer to the
   // user's system settings.
-  color-scheme: light;
+  // color-scheme: light;
 
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these
   // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
+  // background-color: var(--mat-sys-surface);
+  // color: var(--mat-sys-on-surface);
+  // font: var(--mat-sys-body-medium);
 
+  .mat-mdc-snack-bar-container.success-snackbar .mdc-snackbar__surface {
+  background: #16a34a !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+.mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
+  background: #dc2626 !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+.mat-mdc-snack-bar-container.success-snackbar .mdc-snackbar__label,
+.mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__label {
+  color: #fff !important;
+  font-weight: 500;
+}
+
+.mat-mdc-snack-bar-container.success-snackbar .mat-mdc-button,
+.mat-mdc-snack-bar-container.error-snackbar .mat-mdc-button {
+  color: #fff !important;
+}
   // Reset the user agent margin.
   margin: 0;
   height: 100%;
+
+ 
 }
 /* You can add global styles to this file, and also import other style files */

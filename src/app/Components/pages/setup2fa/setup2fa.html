@@ -10,8 +10,9 @@
 
     @if (qrCodeImageBase64) {
       <div class="qr-box">
-        <img [src]="'data:image/png;base64,' + qrCodeImageBase64" alt="QR Code" />
+        <img [src]="'data:image/png;base64,' + qrCodeImageBase64" alt="QR Code" style="height: 30vh; width: 30vh;" />
       </div>
+      <br>
 
       <button mat-raised-button color="primary" class="full-width" (click)="continueToVerify()">
         Continue to Verify OTP

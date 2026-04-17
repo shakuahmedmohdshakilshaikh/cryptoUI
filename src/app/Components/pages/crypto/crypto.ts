@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MaterialModule } from '../../../Material.Module';
 import { CryptoService } from '../../../Services/CryptoService';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { MatDialog, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-crypto',
-  imports: [MaterialModule],
+  imports: [MaterialModule, MatDialogContent, MatDialogActions],
   templateUrl: './crypto.html',
   styleUrl: './crypto.scss',
 })
 export class Crypto implements OnInit {
+ @ViewChild('buyDialog') buyDialog!: TemplateRef<any>;
+
   userId = 0;
 
   currency = 'inr';
@@ -35,10 +39,26 @@ export class Crypto implements OnInit {
     'actions'
   ];
 
+   selectedCoin: any = null;
+  buyAmount: number = 0;
+  calculatedQuantity: number = 0;
+  calculatedPricePerUnit: number = 0;
+
   constructor(
     private crypto: CryptoService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
+
+  showToast(message: string, type: 'success' | 'error' = 'success'): void {
+  this.snackBar.open(message, 'Close', {
+    duration: 3000,
+    horizontalPosition: 'right',
+    verticalPosition: 'top',
+    panelClass: type === 'success' ? 'success-snackbar' : 'error-snackbar'
+  });
+}
 
   ngOnInit(): void {
     if (typeof window === 'undefined') {
@@ -136,27 +156,45 @@ export class Crypto implements OnInit {
     return this.sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward';
   }
 
-  buyCoin(coin: any): void {
+    openBuyDialog(coin: any): void {
     if (!this.userId || this.userId <= 0) {
-      alert('You must be logged in to buy crypto.');
+      this.showToast('You must be logged in to buy crypto.','error');
       return;
     }
 
-    const name = coin.cryptoName || coin.cryptoname || 'coin';
-    const amountText = prompt(`Enter amount to buy ${name}`, '1000');
+    this.selectedCoin = coin;
+    this.buyAmount = 0;
+    this.calculatedPricePerUnit = Number(coin.currentPrice || 0);
+    this.calculatedQuantity = 0;
 
-    if (!amountText) return;
+    this.dialog.open(this.buyDialog, {
+      width: '420px',
+      disableClose: true
+    });
+  }
 
-    const amount = Number(amountText);
+    onAmountChange(): void {
+    const amount = Number(this.buyAmount) || 0;
+    const price = Number(this.calculatedPricePerUnit) || 0;
+
+    this.calculatedQuantity = price > 0 ? amount / price : 0;
+  }
+
+  confirmBuy(): void {
+    if (!this.selectedCoin) {
+      return;
+    }
+
+    const amount = Number(this.buyAmount);
 
     if (isNaN(amount) || amount <= 0) {
-      alert('Please enter a valid amount');
+      this.showToast('Please enter a valid amount','error');
       return;
     }
 
     const payload = {
       userId: this.userId,
-      cryptoId: coin.cryptoId,
+      cryptoId: this.selectedCoin.cryptoId,
       amount: amount
     };
 
@@ -164,21 +202,29 @@ export class Crypto implements OnInit {
 
     this.crypto.buycoin(payload).subscribe({
       next: () => {
-        alert(`${name} bought successfully`);
+        this.showToast(`${this.selectedCoin.cryptoName} bought successfully`,'success');
+        this.dialog.closeAll();
         this.loadCoins();
       },
       error: (err) => {
         console.error('Buy failed', err);
         console.error('Buy error body', err.error);
         const message = err?.error?.message || err?.message || 'Buy failed';
-        alert(message);
+        this.showToast(message,'error');
       }
     });
   }
 
+  closeBuyDialog(): void {
+    this.dialog.closeAll();
+  }
+
+  
+ 
+
   addToFavourite(coin: any): void {
     if (!this.userId || this.userId <= 0) {
-      alert('You must be logged in first.');
+      this.showToast('You must be logged in first.','error');
       return;
     }
 
@@ -191,12 +237,12 @@ export class Crypto implements OnInit {
 
     this.crypto.addToFavorites(payload).subscribe({
       next: () => {
-        alert(`${coin.cryptoName} added to favourites`);
+        this.showToast(`${coin.cryptoName} added to favourites`,'success');
       },
       error: (err) => {
         console.error('Favourite failed', err);
         console.error('Favourite error body', err.error);
-        alert(err?.error?.message || 'Failed to add favourite');
+        this.showToast(err?.error?.message || 'Failed to add favourite','error');
       }
     });
   }

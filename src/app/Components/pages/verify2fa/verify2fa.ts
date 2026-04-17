@@ -40,9 +40,9 @@ export class Verify2fa implements OnInit {
 
         this.message = res?.message || 'OTP verified successfully';
 
-        const token = res?.data?.token;
-        const userId = res?.data?.userId;
-        const email = res?.data?.email;
+        const token = res.data.token;
+        const userId = res.data.userId;
+        const email = res.data.email;
 
         if (typeof window !== 'undefined' && window.localStorage) {
           if (token) {
