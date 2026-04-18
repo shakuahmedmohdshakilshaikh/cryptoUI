@@ -273,32 +273,6 @@
   }
 }
 
-.history-table {
-  width: 100%;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-}
-
-.tx-badge {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  display: inline-block;
-}
-
-.tx-badge.credit {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.tx-badge.debit {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
 // .success-snackbar {
 //   --mdc-snackbar-container-color: #16a34a !important;
 //   --mdc-snackbar-supporting-text-color: #ffffff !important;

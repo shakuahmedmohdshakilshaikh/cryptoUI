@@ -12,6 +12,7 @@ import { Setup2fa } from './Components/pages/setup2fa/setup2fa';
 import { Verify2fa } from './Components/pages/verify2fa/verify2fa';
 import { authGuard } from './gaurds/auth-guard';
 import { Profile } from './Components/pages/profile/profile';
+import { CryptoHolding } from './Components/pages/crypto-holding/crypto-holding';
 
 export const routes: Routes = [
   
@@ -29,7 +30,9 @@ export const routes: Routes = [
   { path: 'crypto', component: Crypto, canActivate: [authGuard] },
   { path: 'favourites', component: Favourites, canActivate: [authGuard] },
   { path: 'wallet', component: Wallet, canActivate: [authGuard] },
+    {path: 'cryptoholding', component: CryptoHolding, canActivate: [authGuard]},
   { path: 'transactions', component: TransactionHistory, canActivate: [authGuard] },
+
   {path: 'profile', component: Profile, canActivate: [authGuard]},
 
   { path: '**', redirectTo: 'login' }

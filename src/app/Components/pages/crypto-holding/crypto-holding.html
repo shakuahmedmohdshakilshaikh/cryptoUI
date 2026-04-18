@@ -1,0 +1,172 @@
+<div class="wallet-page">
+  <div class="breadcrumb">Home / Wallet</div>
+
+  <!-- <mat-card class="balance-card">
+    <div class="balance-left">
+      <p class="label">AVAILABLE BALANCE</p>
+      <h1>₹{{ balance | number:'1.2-2' }}</h1>
+    </div>
+
+    <div class="balance-actions">
+      <button mat-raised-button class="deposit-btn" (click)="addMoney()">
+        <mat-icon>add</mat-icon>
+        Deposit
+      </button>
+
+      <button mat-raised-button class="withdraw-btn" (click)="deductMoney()">
+        <mat-icon>remove</mat-icon>
+        Withdraw
+      </button>
+    </div>
+  </mat-card> -->
+
+  <!-- <mat-card class="wallet-form-card">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Deposit Amount</mat-label>
+        <input matInput type="number" [(ngModel)]="addAmount" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Withdraw Amount</mat-label>
+        <input matInput type="number" [(ngModel)]="deductAmount" />
+      </mat-form-field>
+    </div>
+  </mat-card> -->
+
+  <mat-card class="holding-card">
+    <div class="holding-header">
+      <h3>Your Crypto Holdings</h3>
+
+      <button mat-stroked-button class="asset-count-btn">
+        {{ transactions.length }} Assets
+      </button>
+    </div>
+
+    @if (loading) {
+      <div class="empty-state">
+        <p>Loading...</p>
+      </div>
+    }
+
+    @if (!loading && transactions.length === 0) {
+      <div class="empty-state">
+        <p>No assets found</p>
+        <button mat-raised-button color="primary" routerLink="/crypto">
+          Go to Market
+        </button>
+      </div>
+    }
+
+    @if (!loading && transactions.length > 0) {
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="transactions" class="holdings-table">
+
+          <ng-container matColumnDef="cryptoName">
+            <th mat-header-cell *matHeaderCellDef>COIN</th>
+            <td mat-cell *matCellDef="let row">
+              <div class="coin-cell">
+                <img
+                  [src]="row.image"
+                  [alt]="row.cryptoName"
+                  class="coin-avatar"
+                />
+
+                <div>
+                  <div class="coin-name">{{ row.cryptoName }}</div>
+                  <div class="coin-symbol">{{ row.symbol }}</div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef>QUANTITY</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.quantity }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalAmount">
+            <th mat-header-cell *matHeaderCellDef>VALUE</th>
+            <td mat-cell *matCellDef="let row">
+              ₹{{ row.totalAmount | number:'1.2-2' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="transactionType">
+            <th mat-header-cell *matHeaderCellDef>ACTIONS</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="tx-badge" [class.buy]="row.transactionType === 'Buy'" [class.sell]="row.transactionType === 'Sell'">
+                {{ row.transactionType }}
+              </span>
+
+              <button mat-button color="primary" (click)="openBuyDialog(row)">Buy</button>
+
+              <button mat-button color="warn" (click)="openSellDialog(row)">Sell</button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['cryptoName', 'quantity', 'totalAmount', 'transactionType']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['cryptoName', 'quantity', 'totalAmount', 'transactionType']"></tr>
+        </table>
+      </div>
+    }
+  </mat-card>
+</div>
+
+<ng-template #buyDialog>
+  <h2 mat-dialog-title>Buy {{ selectedCoin?.cryptoName }}</h2>
+
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Enter Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="buyAmount"
+        (input)="onBuyAmountChange()"
+        placeholder="Enter amount" />
+    </mat-form-field>
+
+    <div class="buy-info-card">
+      <p><strong>Coin:</strong> {{ selectedCoin?.cryptoName }}</p>
+      <p><strong>Symbol:</strong> {{ selectedCoin?.symbol }}</p>
+      <p><strong>Price Per Unit:</strong> ₹ {{ buyCalculatedPricePerUnit | number:'1.2-2' }}</p>
+      <p><strong>Quantity:</strong> {{ buyCalculatedQuantity | number:'1.6-6' }}</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="confirmBuy()">Buy</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #sellDialog>
+  <h2 mat-dialog-title>Sell {{ selectedCoin?.cryptoName }}</h2>
+
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Enter Quantity</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="sellQuantity"
+        (input)="onSellQuantityChange()"
+        placeholder="Enter quantity" />
+    </mat-form-field>
+
+    <div class="buy-info-card">
+      <p><strong>Coin:</strong> {{ selectedCoin?.cryptoName }}</p>
+      <p><strong>Available Quantity:</strong> {{ maxSellQuantity }}</p>
+      <p><strong>Price Per Unit:</strong> ₹ {{ sellCalculatedPricePerUnit | number:'1.2-2' }}</p>
+      <p><strong>Total Amount:</strong> ₹ {{ sellCalculatedTotalAmount | number:'1.2-2' }}</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="warn" (click)="confirmSell()">Sell</button>
+  </mat-dialog-actions>
+</ng-template>

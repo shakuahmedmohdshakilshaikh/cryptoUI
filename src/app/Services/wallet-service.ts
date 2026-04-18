@@ -39,4 +39,8 @@ export class WalletService {
   sellCoins(data:any):Observable<any>{
     return this.http.post(`${this.apiurl}portfolio/sell`,data);
   }
+
+  transactionHistory(userId : any) : Observable<any>{
+    return this.http.get(`${this.apiurl}wallet/transaction-history/${userId}`);
+  }
 }
